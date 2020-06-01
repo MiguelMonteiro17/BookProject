@@ -1,27 +1,24 @@
 package com.book.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.book.dto.BookDTO;
+import java.util.List;
 
-import javax.transaction.Transactional;
+public interface BookService{
 
-import com.book.dal.BookRepository;
-import com.book.entity.BookEntity;
+    public List<BookDTO> getAllBooks();
 
-@Service
-@Transactional
-public class BookService {
-    private BookRepository bookRepository;
+    /**
+     * This method will return the book information
+     * 
+     * @param id the id of the book
+     * @return returns a string containg the book information.
+     */
+    public String getBookStats(Long id);
 
-    @Autowired
-    public BookService(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
-
-    public String getBookStats(Long id){
-        BookEntity book= bookRepository.findById(id);
-        String result="{ID : "+book.getId().toString()+",Title : "+book.getTitle()+",Author :"+ book.getAuthor()+" }";
-
-        return result;
-    }
+    /**
+     * This method attemps to create a book when receiving a object {@link BookDTO}.
+     * 
+     * @param book {@link BookDTO} 
+     */
+    public void createBook(BookDTO book);
 }
