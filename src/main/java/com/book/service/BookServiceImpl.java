@@ -7,9 +7,10 @@ import javax.transaction.Transactional;
 
 import com.book.dal.BookRepository;
 import com.book.entity.BookEntity;
-
+import com.book.exceptions.BookNotFoundException;
 import com.book.dto.BookDTO;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -19,30 +20,34 @@ public class BookServiceImpl implements BookService{
     private final BookRepository bookRepository;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(final BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
     @Override
     public List<BookDTO> getAllBooks() {
-        List<BookEntity> bookList = bookRepository.findAll();
-        List<BookDTO> bookDTOList = bookList.stream().
-                map(x -> new BookDTO(x.getId(), x.getTitle(), x.getAuthor()))
-                .collect(Collectors.toList());
+        final List<BookEntity> bookList = bookRepository.findAll();
+        final List<BookDTO> bookDTOList = bookList.stream()
+                .map(x -> new BookDTO(x.getId(), x.getTitle(), x.getAuthor())).collect(Collectors.toList());
         return bookDTOList;
     }
 
     @Override
-    public String getBookStats( Long id){
+    public BookDTO getBookByID( final Long id) throws BookNotFoundException{
         final BookEntity book= bookRepository.findById(id);
-        final String result="{ID : "+book.getId().toString()+",Title : "+book.getTitle()+",Author :"+ book.getAuthor()+" }";
-
-        return result;
+        if(book != null){
+            final BookDTO bookDTO = new BookDTO(book.getId(), book.getTitle(), book.getAuthor());
+            return bookDTO;
+        }else{
+            throw new BookNotFoundException();
+        }
+        
     }
 
     @Override
-    public void createBook(BookDTO bookDTO){
+    public BookDTO createBook(final BookDTO bookDTO) {
         BookEntity book = new BookEntity(bookDTO.getTitle(), bookDTO.getAuthor());
-        bookRepository.save(book);
+        book = bookRepository.save(book);
+        return new BookDTO(book);
     }
 }

@@ -1,5 +1,7 @@
 package com.book.dto;
 
+import com.book.entity.BookEntity;
+
 public class BookDTO{
     private Long id;
 
@@ -14,6 +16,12 @@ public class BookDTO{
         setId(id);
         setTitle(title);
         setAuthor(author);
+    }
+
+    public BookDTO(BookEntity book){
+        setId(book.getId());
+        setAuthor(book.getAuthor());
+        setTitle(book.getTitle());
     }
 
     public Long getId() {

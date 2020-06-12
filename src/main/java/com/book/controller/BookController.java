@@ -31,15 +31,14 @@ public class BookController {
     }
 
     @RequestMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, method= RequestMethod.GET)
-    public ResponseEntity<String> onResRequest(@PathVariable("id") final String id){
+    public ResponseEntity<BookDTO> onResRequest(@PathVariable("id") final String id){
         final Long Id = Long.parseLong(id);
-        return ResponseEntity.ok(bookService.getBookStats(Id));
-        //return ResponseEntity.ok("Hello Books!");
+        return ResponseEntity.ok(bookService.getBookByID(Id));
     }
 
     @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE, method= RequestMethod.POST)
-    public ResponseEntity<String> createBook(@RequestBody BookDTO bookDTO){
-        bookService.createBook(bookDTO);
-        return ResponseEntity.ok("");
+    public ResponseEntity<BookDTO> createBook(@RequestBody BookDTO bookDTO){
+       BookDTO book =  bookService.createBook(bookDTO);
+        return ResponseEntity.ok(book);
     }
 }
